@@ -1,7 +1,6 @@
 class Elemento{
 	method esBueno()
 	
-	method recibirDanioDe(unaPlaga){}
 }
 
 
@@ -12,7 +11,7 @@ class Hogar inherits Elemento {
 	
 	override method esBueno() = mugre <= (confort / 2) 
 	
-	override method recibirDanioDe(unaPlaga){
+	method recibirDanioDe(unaPlaga){
 		mugre += unaPlaga.nivelDeDanio()
 	}
 	
@@ -24,11 +23,12 @@ class Huerta inherits Elemento{
 	
 	override method esBueno() = capacidadDeProduccion > produccionEsperada
 	
-	override method recibirDanioDe(unaPlaga){
-		capacidadDeProduccion -= unaPlaga.nivelDeDanio()*0.9 - self.puntosAdicionales(unaPlaga)
+	method recibirDanioDe(unaPlaga){
+		capacidadDeProduccion = 0.max((capacidadDeProduccion - unaPlaga.nivelDeDanio()*0.1))
+		if (unaPlaga.transmiteEnfermedad()){
+			capacidadDeProduccion = 0.max(capacidadDeProduccion -10)
+		}
 	}
-	
-	method puntosAdicionales(unaPlaga) = if (unaPlaga.transmiteEnfermedad()) 10 else 0
 }
 
 class Mascota inherits Elemento {
@@ -36,9 +36,9 @@ class Mascota inherits Elemento {
 	
 	override method esBueno() = salud > 250
 	
-	override method recibirDanioDe(unaPlaga){
+	method recibirDanioDe(unaPlaga){
 		if(unaPlaga.transmiteEnfermedad()){
-			salud -= unaPlaga.nivelDeDanio()
+			salud = 0.max(salud - unaPlaga.nivelDeDanio())
 		}
 	}
 }
